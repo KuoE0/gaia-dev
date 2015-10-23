@@ -15,10 +15,6 @@
   MultiScreenController.EVENTS = [
     'mozChromeEvent'
   ];
-  MultiScreenController.SETTINGS = [
-    'multiscreen.enabled',
-    'multiscreen.debugging.enabled'
-  ];
   MultiScreenController.STATES = [
     'enabled'
   ];
@@ -28,16 +24,8 @@
     EVENT_PREFIX: 'remote-',
     DEBUG: true,
 
-    enabled: function() {
-      return this._enabled;
-    },
     chooseDisplay: function(config) {
       this.debug('chooseDisplay is invoked');
-
-      if (!this._enabled) {
-        this.debug('multi-screen is disabled');
-        return Promise.reject();
-      }
 
       if (config.isSystemMessage || config.stayBackground) {
         this.debug('unsupported config: ' + JSON.stringify(config));
@@ -153,6 +141,8 @@
 
       this.broadcastChannel = new BroadcastChannel('multiscreen');
       this.broadcastChannel.addEventListener('message', this);
+
+			window.addEventListener('mozChromeEvent', this);
     },
     _stop: function() {
       if (this._enabled) {
@@ -214,22 +204,6 @@
           });
           break;
       }
-    },
-    '_observe_multiscreen.enabled': function(value) {
-      if (value == this._enabled) {
-        return;
-      }
-
-      this._enabled = value;
-      if (this._enabled) {
-        window.addEventListener('mozChromeEvent', this);
-      } else {
-        window.removeEventListener('mozChromeEvent', this);
-      }
-    },
-    '_observe_multiscreen.debugging.enabled': function(value) {
-      var logDiv = document.getElementById('multiscreen-log');
-      logDiv.hidden = !value;
     }
   });
 }());

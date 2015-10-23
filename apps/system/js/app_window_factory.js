@@ -218,11 +218,7 @@
           this.publish('launchapp', config);
         };
 
-        if (Service.query('MultiScreenController.enabled')) {
-          Service.request('chooseDisplay', config).catch(launchApp);
-        } else {
-          launchApp();
-        }
+				Service.request('chooseDisplay', config).catch(launchApp);
       }
     },
 
