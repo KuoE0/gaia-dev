@@ -1,4 +1,5 @@
 'use strict';
+/* vim: set shiftwidth=2 tabstop=2 autoindent cindent expandtab: */
 /* global applications, BrowserConfigHelper, AppWindow, Service */
 /* jshint nonew: false */
 
