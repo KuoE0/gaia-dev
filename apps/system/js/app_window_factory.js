@@ -218,6 +218,7 @@
           this.publish('launchapp', config);
         };
 
+				// If chooseDisplay failed, launch app on the phone directly. (catch)
 				Service.request('chooseDisplay', config).catch(launchApp);
       }
     },
