@@ -48,7 +48,8 @@
     "systemXHR": {},
     "feature-detection": {},
     "before-after-keyboard-event": {},
-    "moz-extremely-unstable-and-will-change-webcomponents":{}
+    "moz-extremely-unstable-and-will-change-webcomponents": {},
+    "presentation-device-manage": {}
   },
   "locales": {
     "ar": {
