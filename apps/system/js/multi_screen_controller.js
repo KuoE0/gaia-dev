@@ -1,3 +1,4 @@
+/* vim: set shiftwidth=2 tabstop=2 autoindent cindent expandtab: */
 /* global ActionMenu, BaseModule, LazyLoader, BroadcastChannel */
 'use strict';
 
@@ -6,6 +7,7 @@
   MultiScreenController.SUB_MODULES = [
     'RemoteTouchPanel'
   ];
+
   MultiScreenController.SERVICES = [
     'queryExternalDisplays',
     'chooseDisplay',
@@ -15,9 +17,7 @@
   MultiScreenController.EVENTS = [
     'mozChromeEvent'
   ];
-  MultiScreenController.STATES = [
-    'enabled'
-  ];
+
   BaseModule.create(MultiScreenController, {
     name: 'MultiScreenController',
 
@@ -45,7 +45,8 @@
           return Promise.resolve(displayId);
         });
     },
-    showMenu: function(displays) {
+
+    showMenu: function(deviceList) {
       this.debug('showMenu is invoked');
 
       if (this.actionMenu) {
@@ -53,7 +54,7 @@
         return Promise.reject();
       }
 
-      if (!displays.length) {
+      if (!deviceList.length) {
         this.debug('no external display so cancel the menu directly');
         return Promise.resolve();
       }
@@ -71,7 +72,7 @@
             }
           });
 
-          this.actionMenu.show(displays.map(function(display) {
+          this.actionMenu.show(deviceList.map(function(display) {
             return {
               label: display.name,
               value: display.id
@@ -80,29 +81,20 @@
         });
       });
     },
+
     queryExternalDisplays: function() {
       this.debug('queryExternalDisplays is invoked');
 
-      if (this.queryPromiseCallback) {
-        this.debug('there\'s a pending query');
+      var mozPresentationDeviceInfo = window.navigator.mozPresentationDeviceInfo;
+      if (typeof mozPresentationDeviceInfo === 'undefined') {
+        this.debug("mozPresentationDeviceInfo is undefined");
         return Promise.reject();
       }
 
-      return new Promise((resolve, reject) => {
-        this.debug('sending mozContentEvent');
-
-        this.queryPromiseCallback = {
-          resolve: resolve,
-          reject: reject
-        };
-
-        window.dispatchEvent(new CustomEvent('mozContentEvent', {
-          detail: {
-            type: 'get-display-list'
-          }
-        }));
-      });
+      mozPresentationDeviceInfo.forceDiscovery();
+      return mozPresentationDeviceInfo.getAll();
     },
+
     postMessage: function(target, type, detail) {
       if (type != 'remote-touch') {
         this.debug('broadcast message to #' + target + ': ' +
@@ -115,6 +107,7 @@
         detail: detail
       });
     },
+
     remoteTouch: function(evt) {
       var touch =
         (evt.type == 'touchend') ? evt.changedTouches[0] : evt.touches[0];
@@ -134,6 +127,7 @@
         }
       });
     },
+
     _start: function() {
       this._enabled = false;
       this.actionMenu = null;
@@ -144,6 +138,7 @@
 
 			window.addEventListener('mozChromeEvent', this);
     },
+
     _stop: function() {
       if (this._enabled) {
         window.removeEventListener('mozChromeEvent', this);
@@ -165,6 +160,7 @@
         this.actionMenu = null;
       }
     },
+
     _handle_mozChromeEvent: function(evt) {
       var detail = evt.detail;
 
@@ -186,6 +182,7 @@
       this.queryPromiseCallback = null;
       this.debug('got mozChromeEvent: ' + JSON.stringify(detail));
     },
+
     _handle_message: function(evt) {
       var data = evt.data;
       if (data.target !== undefined) {
