@@ -48,7 +48,6 @@
             }
           }));
 
-          this.postMessage(displayId, 'launch-app', config);
           return Promise.resolve(displayId);
         });
     },
