@@ -41,6 +41,13 @@
             return Promise.reject();
           }
 
+          window.dispatchEvent(new CustomEvent('mozContentEvent', {
+            detail: {
+              type: 'display-device-selected',
+              id: displayId
+            }
+          }));
+
           this.postMessage(displayId, 'launch-app', config);
           return Promise.resolve(displayId);
         });
