@@ -11,22 +11,12 @@
     'mozChromeEvent',
     'mozPresentationChromeEvent'
   ];
-  MultiScreenController.SETTINGS = [
-    'multiscreen.enabled'
-  ];
-  MultiScreenController.STATES = [
-    'enabled'
-  ];
 
   BaseModule.create(MultiScreenController, {
     name: 'MultiScreenController',
 
     EVENT_PREFIX: 'remote-',
     DEBUG: false,
-
-    enabled: function() {
-      return this._enabled;
-    },
 
     choosePresentationDevice: function() {
       this.debug('chooseDisplay for presentation device selection');
@@ -110,7 +100,6 @@
     },
 
     _start: function() {
-      this._enabled = false;
       this.actionMenu = null;
 
       this.broadcastChannel = new BroadcastChannel('multiscreen');
@@ -118,8 +107,6 @@
     },
 
     _stop: function() {
-      this._enabled = false;
-
       this.broadcastChannel.close();
       this.broadcastChannel = null;
 
@@ -219,14 +206,6 @@
           });
           break;
       }
-    },
-
-    '_observe_multiscreen.enabled': function(value) {
-      if (value == this._enabled) {
-        return;
-      }
-
-      this._enabled = value;
     }
   });
 }());

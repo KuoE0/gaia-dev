@@ -16,7 +16,6 @@ suite('system/MultiScreenController', function() {
   mocksForMultiScreenController.attachTestHelpers();
 
   var subject;
-  var settingsKey = 'multiscreen.enabled';
 
   var mockConfig = {
     url: 'test'
@@ -41,7 +40,6 @@ suite('system/MultiScreenController', function() {
   setup(function() {
     subject = BaseModule.instantiate('MultiScreenController');
     subject.start();
-    subject['_observe_' + settingsKey](true);
   });
 
   teardown(function() {
@@ -52,27 +50,6 @@ suite('system/MultiScreenController', function() {
     test('should establish a broadcast channel', function() {
       assert.isNotNull(subject.broadcastChannel);
       assert.equal(subject.broadcastChannel.name, 'multiscreen');
-    });
-  });
-
-  suite('settings', function() {
-    test('toggle "' + settingsKey + '"', function() {
-      subject.stop();
-      subject.start();
-
-      var stubAddEventListener =
-        this.sinon.stub(window, 'addEventListener');
-      var stubRemoveEventListener =
-        this.sinon.stub(window, 'removeEventListener');
-
-      subject['_observe_' + settingsKey](true);
-      assert.isTrue(subject.enabled());
-
-      subject['_observe_' + settingsKey](false);
-      assert.isFalse(subject.enabled());
-
-      stubAddEventListener.restore();
-      stubRemoveEventListener.restore();
     });
   });
 
