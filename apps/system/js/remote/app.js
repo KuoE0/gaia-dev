@@ -1,4 +1,5 @@
-/* global BaseModule */
+/* vim: set shiftwidth=2 tabstop=2 autoindent cindent expandtab: */
+/* global BaseModule, Service */
 'use strict';
 
 (function(exports) {
@@ -31,6 +32,8 @@
         parseInt(window.location.hash.substring(1), 10) :
         -1;
       this.debug('displayId: ' + this._displayId);
+
+      Service.request('postMessage', 'remote-system-ready');
     }
   });
 }(window));

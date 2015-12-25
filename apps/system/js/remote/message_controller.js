@@ -1,9 +1,15 @@
+/* -*- indent-tabs-mode: nil; js-indent-level: 2 -*- /
+/* vim: set shiftwidth=2 tabstop=2 autoindent cindent expandtab: */
 /* global BaseModule, BroadcastChannel, Service */
 'use strict';
 
 (function(exports) {
   function MessageController() {
   }
+
+  MessageController.SERVICES = [
+    'postMessage'
+  ];
 
   // An empty EVENTS is necessary for triggering EventMixin in BaseModule.
   MessageController.EVENTS = [
@@ -27,7 +33,7 @@
     },
 
     _start: function() {
-      this.displayId = Service.query('displayId');
+      this.displayId = parseInt(Service.query('displayId'));
 
       this.broadcastChannel = new BroadcastChannel('multiscreen');
       this.broadcastChannel.addEventListener('message', this);
@@ -40,7 +46,8 @@
 
     _handle_message: function(evt) {
       var data = evt.data;
-      if (data.target !== this.displayId) {
+      if (parseInt(data.target) !== this.displayId &&
+          parseInt(data.target) !== -1) {
         return;
       }
       this.debug('[#' + this.displayId + '] ' +
@@ -48,6 +55,20 @@
         ', ' + JSON.stringify(data.detail));
 
       switch(data.type) {
+        case 'launch-presentation-app':
+          this.debug('request to launchPresentationApp');
+          Service.request('launchPresentationApp', data.detail)
+            .then(() => {
+              this.postMessage('launch-app-success', {
+                config: data.detail
+              });
+            }).catch((reason) => {
+              this.postMessage('launch-app-error', {
+                config: data.detail,
+                reason: reason
+              });
+            });
+          break;
         case 'launch-app':
           Service.request('launchApp', data.detail).then(() => {
             this.postMessage('launch-app-success', {

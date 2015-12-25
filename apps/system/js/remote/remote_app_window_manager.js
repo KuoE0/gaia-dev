@@ -1,3 +1,5 @@
+/* -*- indent-tabs-mode: nil; js-indent-level: 2 -*- /
+/* vim: set shiftwidth=2 tabstop=2 autoindent cindent expandtab: */
 /* global BaseModule, BrowserFrame */
 'use strict';
 
@@ -7,6 +9,7 @@
 
   RemoteAppWindowManager.SERVICES = [
     'launchApp',
+    'launchPresentationApp',
     'killCurrentApp'
   ];
 
@@ -19,7 +22,9 @@
 
     name: 'RemoteAppWindowManager',
 
-    REGISTERED_EVENTS: ['mozbrowserclose', 'mozbrowsererror'],
+    REGISTERED_EVENTS: ['mozbrowserclose',
+                        'mozbrowsererror',
+                        'mozbrowserloadend'],
 
     launchApp: function(config, immediate) {
       return new Promise((resolve, reject) => {
@@ -59,6 +64,20 @@
       });
     },
 
+    launchPresentationApp: function(config, immediate) {
+      this.debug('launch presentation app...');
+
+      this.requestId = config.requestId;
+      if (!config.manifest.permissions ||
+          !config.manifest.permissions.presentation) {
+        this.debug('no presentation permission');
+        this._sendPresentationDenied();
+        return Promise.reject();
+      }
+
+      return this.launchApp(config);
+    },
+
     killCurrentApp: function() {
       if (!this.currentApp) {
         return;
@@ -93,6 +112,37 @@
 
     _handle_mozbrowserclose: function() {
       this.killCurrentApp();
+    },
+
+    _handle_mozbrowserloadend: function() {
+      this._sendPresentationLaunched();
+    },
+
+    _sendPresentationDenied: function(id) {
+      this.debug('app denied');
+      var evt = new CustomEvent('mozPresentationContentEvent', {
+        bubbles: true,
+        cancelable: false,
+        detail: {
+          type: 'presentation-receiver-permission-denied',
+          id: this.requestId
+        }
+      });
+      window.dispatchEvent(evt);
+    },
+
+    _sendPresentationLaunched: function() {
+      this.debug('app launched');
+      var evt = new CustomEvent('mozPresentationContentEvent', {
+        bubbles: true,
+        cancelable: false,
+        detail: {
+          type: 'presentation-receiver-launched',
+          id: this.requestId,
+          frame: this.currentApp.element
+        }
+      });
+      window.dispatchEvent(evt);
     }
   });
 }(window));
