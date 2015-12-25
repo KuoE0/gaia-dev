@@ -17,7 +17,7 @@
   ];
 
   BaseModule.create(App, {
-    DEBUG: false,
+    DEBUG: true,
     name: 'App',
 
     displayId: function() {

@@ -16,7 +16,7 @@
     name: 'MultiScreenController',
 
     EVENT_PREFIX: 'remote-',
-    DEBUG: false,
+    DEBUG: true,
 
     choosePresentationDevice: function() {
       this.debug('chooseDisplay for presentation device selection');
