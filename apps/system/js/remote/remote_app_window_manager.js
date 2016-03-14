@@ -8,7 +8,6 @@
   }
 
   RemoteAppWindowManager.SERVICES = [
-    'launchApp',
     'launchPresentationApp',
     'killCurrentApp'
   ];
@@ -124,10 +123,10 @@
 
     _sendPresentationResult: function(detail) {
       this.debug(detail.type);
-      var evt = new CustomEvent('mozPresentationContentEvent', {
+      let evt = new CustomEvent('mozPresentationContentEvent', {
         bubbles: true,
         cancelable: false,
-        detail: detail
+        detail: detail,
       });
       window.dispatchEvent(evt);
     }

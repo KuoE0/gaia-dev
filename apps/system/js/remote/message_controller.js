@@ -54,15 +54,16 @@
         ', ' + JSON.stringify(data.detail));
 
       switch(data.type) {
-        case 'launch-presentation-app':
-          this.debug('request to launchPresentationApp');
+        case 'app-config-ready':
           Service.request('launchPresentationApp', data.detail)
             .then(() => {
-              this.postMessage('launch-app-success', {
+              this.publish('launch-app-success', {
+                displayId: Service.query('displayId'),
                 config: data.detail
               });
             }).catch((reason) => {
-              this.postMessage('launch-app-error', {
+              this.publish('launch-app-error', {
+                displayId: Service.query('displayId'),
                 config: data.detail,
                 reason: reason
               });
