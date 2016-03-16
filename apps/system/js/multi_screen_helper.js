@@ -7,7 +7,6 @@
 (function() {
   var MultiScreenHelper = function() {};
   MultiScreenHelper.SERVICES = [
-    'chooseDisplay'
   ];
 
   MultiScreenHelper.EVENTS = [

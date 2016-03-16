@@ -6,12 +6,12 @@ requireApp('system/js/service.js');
 requireApp('system/js/base_module.js');
 requireApp('system/js/remote/message_controller.js');
 
-var mocksForMultiScreenController = new MocksHelper([
+var mocksForMultiScreenHelper = new MocksHelper([
   'LazyLoader'
 ]).init();
 
 suite('system/remote/MessageController', function() {
-  mocksForMultiScreenController.attachTestHelpers();
+  mocksForMultiScreenHelper.attachTestHelpers();
 
   var subject;
   var fakeDisplayId = 'test';

@@ -8,12 +8,12 @@ requireApp('system/js/service.js');
 requireApp('system/js/base_module.js');
 requireApp('system/js/remote/app.js');
 
-var mocksForMultiScreenController = new MocksHelper([
+var mocksForMultiScreenHelper = new MocksHelper([
   'LazyLoader'
 ]).init();
 
 suite('system/remote/App', function() {
-  mocksForMultiScreenController.attachTestHelpers();
+  mocksForMultiScreenHelper.attachTestHelpers();
 
   var subject;
 

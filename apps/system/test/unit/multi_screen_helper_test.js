@@ -11,16 +11,16 @@ requireApp('system/test/unit/mock_applications.js');
 requireApp('system/js/service.js');
 requireApp('system/js/base_module.js');
 requireApp('system/js/browser_config_helper.js');
-requireApp('system/js/multi_screen_controller.js');
+requireApp('system/js/multi_screen_helper.js');
 
-var mocksForMultiScreenController = new MocksHelper([
+var mocksForMultiScreenHelper = new MocksHelper([
   'ActionMenu',
   'LazyLoader',
   'ManifestHelper'
 ]).init();
 
-suite('system/MultiScreenController', function() {
-  mocksForMultiScreenController.attachTestHelpers();
+suite('system/MultiScreenHelper', function() {
+  mocksForMultiScreenHelper.attachTestHelpers();
   var subject;
   var realApplications;
 
@@ -52,7 +52,7 @@ suite('system/MultiScreenController', function() {
   setup(function() {
     realApplications = window.applications;
     window.applications = MockApplications;
-    subject = BaseModule.instantiate('MultiScreenController');
+    subject = BaseModule.instantiate('MultiScreenHelper');
     subject.start();
   });
 
